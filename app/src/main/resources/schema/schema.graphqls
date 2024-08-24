@@ -4,16 +4,25 @@ type Query {
 
 type Mutation {
     updateShow(input: UpdateShowInput!): Show
+    createShow(input: CreateShowInput!): Show
 }
 
 type Show  {
     id: ID!
     title: String
     releaseYear: Int
+    fieldWithDefaultValue: String
 }
 
 input UpdateShowInput {
     id: ID!
     title: String
     releaseYear: Int
+    fieldWithDefaultValue: String = "default value"
+}
+
+input CreateShowInput {
+    title: String
+    releaseYear: Int
+    fieldWithDefaultValue: String = "default value"
 }
