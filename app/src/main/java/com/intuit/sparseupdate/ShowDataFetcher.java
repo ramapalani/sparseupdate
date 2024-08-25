@@ -30,7 +30,7 @@ public class ShowDataFetcher {
     }
 
     @DgsMutation
-    public Show createOrUpdateShow(@InputArgument CreateShowInput input) {
+    public Show createShow(@InputArgument CreateShowInput input) {
         // createShowInput should be validated for correct values
         // but there is no need to check whether or not a field input is provided by the API caller.
         Show show = createOrUpdateShow(input.getTitle(),
@@ -42,9 +42,9 @@ public class ShowDataFetcher {
 
     @DgsMutation(field = DgsConstants.MUTATION.UpdateShow)
     public Show updateShowSimpleCheck(@InputArgument UpdateShowInput input,  DataFetchingEnvironment dfe) {
-        // When a value is not provided by an API Caller, the object got through @InputArgument will null value for all nullable fields
+        // When a value is not provided by an API Caller, the object got through @InputArgument will set null value for all nullable fields
         // We wouldn't be able to determine whether user provided the null value or graphql-java coerced it to null
-        // To determine whether the API caller provided a certain input use DataFetchingEnvironment
+        // To support Sparse Update/determine whether the API caller provided a certain input use DataFetchingEnvironment
         Map<String,Object> rawArgumentsMap = dfe.getExecutionStepInfo().getArgument(
                 DgsConstants.MUTATION.UPDATESHOW_INPUT_ARGUMENT.Input);
 
@@ -102,6 +102,7 @@ public class ShowDataFetcher {
         }
 
         Show sparseUpdatedShow = createOrUpdateShow(id, title, releaseYear, fieldWithDefaultValue);
+        data.replace(sparseUpdatedShow.getId(), sparseUpdatedShow);
         return sparseUpdatedShow;
     }
 
