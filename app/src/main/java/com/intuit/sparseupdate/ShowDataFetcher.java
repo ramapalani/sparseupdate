@@ -4,10 +4,7 @@ import com.intuit.sparseupdate.generated.DgsConstants;
 import com.intuit.sparseupdate.generated.types.CreateShowInput;
 import com.intuit.sparseupdate.generated.types.Show;
 import com.intuit.sparseupdate.generated.types.UpdateShowInput;
-import com.netflix.graphql.dgs.DgsComponent;
-import com.netflix.graphql.dgs.DgsMutation;
-import com.netflix.graphql.dgs.DgsQuery;
-import com.netflix.graphql.dgs.InputArgument;
+import com.netflix.graphql.dgs.*;
 import com.netflix.graphql.dgs.exceptions.DgsEntityNotFoundException;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -41,19 +38,17 @@ public class ShowDataFetcher {
     }
 
     @DgsMutation(field = DgsConstants.MUTATION.UpdateShow)
-    public Show updateShowSimpleCheck(@InputArgument UpdateShowInput input,  DataFetchingEnvironment dfe) {
+    public Show updateShowDgsIsArgumentSet(@InputArgument UpdateShowInput input,  DgsDataFetchingEnvironment dgsDfe) {
         // When a value is not provided by an API Caller, the object got through @InputArgument will set null value for all nullable fields
         // We wouldn't be able to determine whether user provided the null value or graphql-java coerced it to null
-        // To support Sparse Update/determine whether the API caller provided a certain input use DataFetchingEnvironment
-        Map<String,Object> rawArgumentsMap = dfe.getExecutionStepInfo().getArgument(
-                DgsConstants.MUTATION.UPDATESHOW_INPUT_ARGUMENT.Input);
+        // To support Sparse Update/determine whether the API caller provided a certain input use DgsDataFetchingEnvironment
 
         // Even when you are supporting sparse update, it is better to get an object through
         // @InputArgument, as it will convert/box all values to appropriate Java types
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Use DataFetchingEnvironment to determine what all fields are provided by the API Caller
-        // Use @InputArgument to get values of the input, as DGS/GraphQL Java will convert it to appropriate Java Type
+        // Use DgsDataFetchingEnvironment to determine what all fields are provided by the API Caller
+        // Use @InputArgument to get values of the input, as DGS/GraphQL-Java will convert it to appropriate Java Type
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // DgsConstants.UPDATESHOWINPUT.Id is a required field,
@@ -65,21 +60,23 @@ public class ShowDataFetcher {
             throw new DgsEntityNotFoundException(msg);
         }
 
-        return sparseUpdateMapper(beforeUpdate, input, rawArgumentsMap);
+        // If you don't want to pass the entire DgsDataFetchingEnvironment object around
+        // extract appropriate isArgumentSet() input fields and pass only that to the mapper
+        return sparseUpdateMapper(beforeUpdate, input, dgsDfe);
     }
 
-    private Show sparseUpdateMapper(Show beforeUpdate, UpdateShowInput apiCallerInput, Map<String,Object>rawMap) {
+    private Show sparseUpdateMapper(Show beforeUpdate, UpdateShowInput apiCallerInput, DgsDataFetchingEnvironment dgsDfe) {
         //////////////////////////////////////////////////////////
         // Non-Null Fields
         //////////////////////////////////////////////////////////
-        // DgsConstants.UPDATESHOWINPUT.Id (id)
+        // DgsConstants.UPDATESHOWINPUT.Id ("id")
         // This will always be provided by the API caller, no need to check the presence
         String id = apiCallerInput.getId();
 
         //////////////////////////////////////////////////////////
         // Nullable field but with defaults in GraphQL Schema
         //////////////////////////////////////////////////////////
-        // DgsConstants.UPDATESHOWINPUT.FieldWithDefaultValue (fieldWithDefaultValue)
+        // DgsConstants.UPDATESHOWINPUT.FieldWithDefaultValue ("fieldWithDefaultValue")
         // These fields will always have value at this point of execution
         // So always set this.
         // If you want this to be updated only when provided by the API caller
@@ -91,12 +88,12 @@ public class ShowDataFetcher {
         // Primary set of fields that are used for sparse update
         //////////////////////////////////////////////////////////
         String title = beforeUpdate.getTitle();
-        boolean isTitlePresent = rawMap.containsKey(DgsConstants.UPDATESHOWINPUT.Title);
+        boolean isTitlePresent = dgsDfe.isArgumentSet(DgsConstants.MUTATION.UPDATESHOW_INPUT_ARGUMENT.Input, DgsConstants.UPDATESHOWINPUT.Title);
         if (isTitlePresent) {
             title = apiCallerInput.getTitle();
         }
         Integer releaseYear = beforeUpdate.getReleaseYear();
-        boolean isReleaseYearPresent = rawMap.containsKey(DgsConstants.UPDATESHOWINPUT.ReleaseYear);
+        boolean isReleaseYearPresent = dgsDfe.isArgumentSet(DgsConstants.MUTATION.UPDATESHOW_INPUT_ARGUMENT.Input, DgsConstants.UPDATESHOWINPUT.ReleaseYear);
         if (isReleaseYearPresent) {
             releaseYear = apiCallerInput.getReleaseYear();
         }
