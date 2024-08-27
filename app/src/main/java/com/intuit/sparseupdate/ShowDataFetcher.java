@@ -6,7 +6,6 @@ import com.intuit.sparseupdate.generated.types.Show;
 import com.intuit.sparseupdate.generated.types.UpdateShowInput;
 import com.netflix.graphql.dgs.*;
 import com.netflix.graphql.dgs.exceptions.DgsEntityNotFoundException;
-import graphql.schema.DataFetchingEnvironment;
 
 import java.util.*;
 
