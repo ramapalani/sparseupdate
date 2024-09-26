@@ -1,23 +1,42 @@
 package com.intuit.sparseupdate.generated.types;
 
-import java.util.BitSet;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.lang.Integer;
+import java.lang.Object;
+import java.lang.Override;
+import java.lang.String;
 
 public class UpdateShowInput {
   private String id;
-  private String title;
+
   private Integer releaseYear;
 
-  private final transient BitSet fieldsPresent = new BitSet();
+  private boolean isReleaseYearSet = false;
 
-  private void setField(Field field) {
-    fieldsPresent.set(field.getOrdinal());
-  }
+  private boolean isTitleSet = false;
 
-  public boolean isSet(Field field) {
-    return fieldsPresent.get(field.getOrdinal());
-  }
+  private String title = "test";
 
   public UpdateShowInput() {
+
+  }
+
+  public UpdateShowInput(String id, Integer releaseYear, String title) {
+    System.out.println("UpdateShowInput 1 hit");
+    this.id = id;
+    this.releaseYear = releaseYear;
+    this.isReleaseYearSet = true;
+    this.title = title;
+    this.isTitleSet = true;
+  }
+
+  public UpdateShowInput(String id, Integer releaseYear) {
+    System.out.println("UpdateShowInput Constructor 2 hit");
+    this.id = id;
+    this.releaseYear = releaseYear;
+    this.isReleaseYearSet = true;
+    this.title = "test";
+    this.isTitleSet = true;
   }
 
   public String getId() {
@@ -26,16 +45,6 @@ public class UpdateShowInput {
 
   public void setId(String id) {
     this.id = id;
-    setField(Field.ID);
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-    setField(Field.TITLE);
   }
 
   public Integer getReleaseYear() {
@@ -44,96 +53,100 @@ public class UpdateShowInput {
 
   public void setReleaseYear(Integer releaseYear) {
     this.releaseYear = releaseYear;
-    setField(Field.RELEASE_YEAR);
+    this.isReleaseYearSet = true;
+  }
+
+  @JsonIgnore
+  public boolean isReleaseYearSetDefined() {
+    return isReleaseYearSet;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+    this.isTitleSet = true;
+  }
+
+  @JsonIgnore
+  public boolean isTitleSetDefined() {
+    return isTitleSet;
   }
 
   @Override
   public String toString() {
-    return "UpdateShowInput{" + "id='" + id + "'," +"title='" + title + "'," +"releaseYear='" + releaseYear + "'" +"}";
+    return "UpdateShowInput{" + "id='" + id + "'," +"releaseYear='" + releaseYear + "'," +"title='" + title + "'" +"}";
   }
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UpdateShowInput that = (UpdateShowInput) o;
-        return java.util.Objects.equals(id, that.id) &&
-                            java.util.Objects.equals(title, that.title) &&
-                            java.util.Objects.equals(releaseYear, that.releaseYear);
+    if (o == null || getClass() != o.getClass()) return false;
+    UpdateShowInput that = (UpdateShowInput) o;
+    return
+            java.util.Objects.equals(id, that.id) &&
+                    java.util.Objects.equals(releaseYear, that.releaseYear) &&
+                    java.util.Objects.equals(title, that.title) ;
   }
 
   @Override
   public int hashCode() {
-    return java.util.Objects.hash(id, title, releaseYear);
+    return java.util.Objects.hash(id, releaseYear, isReleaseYearSet, title, isTitleSet);
   }
 
-  public static com.intuit.sparseupdate.generated.types.UpdateShowInput.Builder newBuilder() {
+  public static Builder newBuilder() {
     return new Builder();
   }
 
   public static class Builder {
     private String id;
 
-    private String title;
-
     private Integer releaseYear;
 
-    private final transient BitSet fieldsPresent = new BitSet();
+    private boolean isReleaseYearSet = false;
 
-    private void setField(Field field) {
-      fieldsPresent.set(field.getOrdinal());
-    }
+    private boolean isTitleSet = false;
 
-    private boolean isSet(Field field) {
-      return fieldsPresent.get(field.getOrdinal());
-    }
+    private String title = "test";
 
     public UpdateShowInput build() {
       com.intuit.sparseupdate.generated.types.UpdateShowInput result = new com.intuit.sparseupdate.generated.types.UpdateShowInput();
       result.id = this.id;
-      result.title = this.title;
       result.releaseYear = this.releaseYear;
-      for (Field field: Field.values()) {
-        if (this.isSet(field)) {
-          result.setField(field);
-        }
-      }
+      result.isReleaseYearSet = this.isReleaseYearSet;
+      result.title = this.title;
+      result.isTitleSet = this.isTitleSet;
       return result;
     }
 
-    public com.intuit.sparseupdate.generated.types.UpdateShowInput.Builder id(String id) {
+    public Builder id(String id) {
       this.id = id;
-      setField(Field.ID);
       return this;
     }
 
-    public com.intuit.sparseupdate.generated.types.UpdateShowInput.Builder title(String title) {
-      this.title = title;
-      setField(Field.TITLE);
-      return this;
-    }
-
-    public com.intuit.sparseupdate.generated.types.UpdateShowInput.Builder releaseYear(
-        Integer releaseYear) {
+    public Builder releaseYear(Integer releaseYear) {
       this.releaseYear = releaseYear;
-      setField(Field.RELEASE_YEAR);
+      this.isReleaseYearSet = true;
       return this;
     }
-  }
 
-  public enum Field {
-    ID(0),
-    TITLE(1),
-    RELEASE_YEAR(2);
-
-    int ordinal = -1;
-
-    Field(int ordinal) {
-      this.ordinal = ordinal;
+    public Builder isReleaseYearSet(boolean isReleaseYearSet) {
+      this.isReleaseYearSet = isReleaseYearSet;
+      return this;
     }
 
-    public int getOrdinal() {
-      return ordinal;
+    public Builder title(String title) {
+      this.title = title;
+      this.isTitleSet = true;
+      return this;
+    }
+
+    public Builder isTitleSet(boolean isTitleSet) {
+      this.isTitleSet = isTitleSet;
+      return this;
     }
   }
 }
+
